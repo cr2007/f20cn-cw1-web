@@ -20,11 +20,14 @@ import {
 } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { KeyLengthGuess } from "@/components/keyLengthGuess";
+import { Separator } from "@/components/ui/separator";
+import { Encrypt } from "@/components/encrypt";
 
 export default function Home() {
-  const [ciphertext, setCiphertext] = useState("");
-  const [plaintext, setPlaintext] = useState("");
-  const [keyLength, setKeyLength] = useState(0);
+  const [ciphertext, setCiphertext] = useState(() => localStorage.getItem("ciphertext") || "");
+  const [plaintext, setPlaintext] = useState(() => localStorage.getItem("plaintext") || "");
+  const [cipherKey, setCipherKey] = useState(() => localStorage.getItem("cipherKey") || "");
+  const [keyLength, setKeyLength] = useState(() => Number(localStorage.getItem("keyLength")) || 0);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -61,9 +64,58 @@ export default function Home() {
                     <KeyLengthGuess ciphertext={ciphertext} keyLengthGuess={keyLength}/>
                   </div>
                 )}
-                {guess && (
-                  <div className="items-center">
-                    <p>{guess}</p>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="encrypt">
+            <Card>
+              <CardHeader>
+                <CardTitle>Vignere Cipher - Encryption</CardTitle>
+                <CardDescription>
+                  Enter your plaintext and your cipher key word to see your encrypted message
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="cipherKey">Cipher Key</Label>
+                  <Input
+                    id="cipherKey"
+                    placeholder="Enter your Cipher Key"
+                    type="text"
+                    pattern="[A-Za-z]+"
+                    title="Only alphabets are allowed"
+                    value={cipherKey}
+                    onKeyDown={(e) => {
+                      // Prevent non-alphabet characters (including numbers) from being typed
+                      if (!/[a-zA-Z]/.test(e.key)) {
+                        e.preventDefault(); // Block the input of non-alphabet characters
+                      }
+                    }}
+                    onChange={(e) => {
+                      setCipherKey(e.target.value);
+                      localStorage.setItem("cipherKey", e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="plaintext">Plain text</Label>
+                  <Textarea
+                    id="plaintext"
+                    placeholder="Enter your plaintext to encrypt"
+                    value={plaintext}
+                    onChange={(e) => {
+                      setPlaintext(e.target.value);
+                      localStorage.setItem("plaintext", e.target.value); // Save to local storage
+                    }}
+                  />
+                </div>
+              </CardContent>
+              <Separator className="w-[350px] mx-auto" />
+              <CardFooter>
+                {/* Display the Ciphertext */}
+                {cipherKey != "" && plaintext != "" && (
+                  <div className="w-full">
+                    <Encrypt plaintext={plaintext} cipherKey={cipherKey} />
                   </div>
                 )}
               </CardFooter>
