@@ -12,17 +12,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { KeyLengthGuess } from "@/components/keyLengthGuess";
 import { Separator } from "@/components/ui/separator";
+
 import { Encrypt } from "@/components/encrypt";
 import { Decrypt } from "@/components/decrypt";
+import { ModeToggle } from "@/components/modeToggle";
 
 export default function Home() {
   const [ciphertext, setCiphertext] = useState(() => localStorage.getItem("ciphertext") || "");
@@ -33,7 +30,8 @@ export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Tabs defaultValue="keyLengthGuess" className="w-[400px]">
+        <ModeToggle />
+        <Tabs defaultValue="keyLengthGuess" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="keyLengthGuess">Key Length Guess</TabsTrigger>
             <TabsTrigger value="encrypt">Encrypt</TabsTrigger>
@@ -41,35 +39,57 @@ export default function Home() {
           </TabsList>
           {/* Key Length Guess Tab */}
           <TabsContent value="keyLengthGuess">
-            <Card>
+            <Card className="w-full max-w-4xl mx-auto">
               <CardHeader>
                 <CardTitle>Vignere Cipher - Key Length Guess</CardTitle>
                 <CardDescription>
-                  Enter your ciphertext and your key length guess to check whether the value is valid or not
+                  Enter your ciphertext and your key length guess to check
+                  whether your guess was a possible key length to break this
+                  ciphertext.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="space-y-1">
                   <Label htmlFor="ciphertext">Ciphertext</Label>
-                  <Textarea id="ciphertext" placeholder="Enter your ciphertext" onChange={(e) => {setCiphertext(e.target.value)}}></Textarea>
+                  <Textarea
+                    id="ciphertext"
+                    placeholder="Enter your ciphertext"
+                    className="break-words whitespace-pre-wrap"
+                    onChange={(e) => {
+                      setCiphertext(e.target.value);
+                      localStorage.setItem("ciphertext", e.target.value);
+                    }}
+                  />
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="keyLength">Key Length - Guess</Label>
-                  <Input id="keyLength" placeholder="Enter your key length" type="number" onChange={(e) => {setKeyLength(Number(e.target.value))}}></Input>
+                  <Input
+                    id="keyLength"
+                    placeholder="Enter your key length"
+                    type="number"
+                    onChange={(e) => {
+                      setKeyLength(Number(e.target.value));
+                      localStorage.setItem("keyLength", e.target.value);
+                    }}
+                  />
                 </div>
               </CardContent>
+              <Separator className="w-[350px] mx-auto" />
               <CardFooter>
                 {/* Display the Guess */}
-                {keyLength != 0 && (
+                {keyLength != 0 && ciphertext != "" && (
                   <div className="w-full">
-                    <KeyLengthGuess ciphertext={ciphertext} keyLengthGuess={keyLength}/>
+                    <KeyLengthGuess
+                      ciphertext={ciphertext}
+                      keyLengthGuess={keyLength}
+                    />
                   </div>
                 )}
               </CardFooter>
             </Card>
           </TabsContent>
           <TabsContent value="encrypt">
-            <Card>
+            <Card className="w-full max-w-4xl mx-auto">
               <CardHeader>
                 <CardTitle>Vignere Cipher - Encryption</CardTitle>
                 <CardDescription>
@@ -103,6 +123,7 @@ export default function Home() {
                   <Textarea
                     id="plaintext"
                     placeholder="Enter your plaintext to encrypt"
+                    className="break-words whitespace-pre-wrap"
                     value={plaintext}
                     onChange={(e) => {
                       setPlaintext(e.target.value);
@@ -178,97 +199,39 @@ export default function Home() {
             </Card>
           </TabsContent>
         </Tabs>
-        
-        {/* <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div> */}
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          href="https://github.com/cr2007/F20CN-CW1"
           target="_blank"
           rel="noopener noreferrer"
         >
           <Image
             aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src="/github-mark.svg"
+            alt="GitHub Logo"
+            className="dark:invert"
+            width={32}
+            height={32}
           />
-          Learn
+          Coursework Source Code
         </a>
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          href="https://github.com/cr2007/F20CN-CW1-web"
           target="_blank"
           rel="noopener noreferrer"
         >
           <Image
             aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+            src="/github-mark.svg"
+            alt="GitHub Logo"
+            className="dark:invert"
+            width={32}
+            height={32}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
+          Web App Source Code
         </a>
       </footer>
     </div>

@@ -41,7 +41,7 @@ export const Encrypt: React.FC<VigenereEncrypt> = ({
 
   return (
     <div className="text-center space-y-4">
-      <p className="leading-7">{ciphertext}</p>
+      <p className="leading-7 break-words whitespace-pre-wrap">{ciphertext}</p>
       <Button onClick={copyToClipboard} className="px-4 py-2" variant="outline" size="icon">
         {copied ? <Check className="w-4 h-4" /> : <Clipboard className="w-4 h-4" />}
       </Button>
