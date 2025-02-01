@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -17,14 +18,13 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import { KeyLengthGuess } from "@/components/keyLengthGuess";
 
 export default function Home() {
   const [ciphertext, setCiphertext] = useState("");
   const [plaintext, setPlaintext] = useState("");
   const [keyLength, setKeyLength] = useState(0);
-  const [guess, setGuess] = useState("");
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -35,6 +35,7 @@ export default function Home() {
             <TabsTrigger value="encrypt">Encrypt</TabsTrigger>
             <TabsTrigger value="decrypt">Decrypt</TabsTrigger>
           </TabsList>
+          {/* Key Length Guess Tab */}
           <TabsContent value="keyLengthGuess">
             <Card>
               <CardHeader>
@@ -55,6 +56,11 @@ export default function Home() {
               </CardContent>
               <CardFooter>
                 {/* Display the Guess */}
+                {keyLength != 0 && (
+                  <div className="w-full">
+                    <KeyLengthGuess ciphertext={ciphertext} keyLengthGuess={keyLength}/>
+                  </div>
+                )}
                 {guess && (
                   <div className="items-center">
                     <p>{guess}</p>
