@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -22,10 +22,21 @@ import { Decrypt } from "@/components/decrypt";
 import { ModeToggle } from "@/components/modeToggle";
 
 export default function Home() {
-  const [ciphertext, setCiphertext] = useState(() => localStorage.getItem("ciphertext") || "");
-  const [plaintext, setPlaintext] = useState(() => localStorage.getItem("plaintext") || "");
-  const [cipherKey, setCipherKey] = useState(() => localStorage.getItem("cipherKey") || "");
-  const [keyLength, setKeyLength] = useState(() => Number(localStorage.getItem("keyLength")) || 0);
+  const [ciphertext, setCiphertext] = useState("");
+  const [plaintext, setPlaintext] = useState("");
+  const [cipherKey, setCipherKey] = useState("");
+  const [keyLength, setKeyLength] = useState(0);
+  const [hydrated, setHydrated] = useState(false); // Prevent SSR access to localStorage
+
+  useEffect(() => {
+    setCiphertext(localStorage.getItem("ciphertext") || "");
+    setPlaintext(localStorage.getItem("plaintext") || "");
+    setCipherKey(localStorage.getItem("cipherKey") || "");
+    setKeyLength(Number(localStorage.getItem("cipherKey")) || 0);
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) return null;
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -55,6 +66,7 @@ export default function Home() {
                     id="ciphertext"
                     placeholder="Enter your ciphertext"
                     className="break-words whitespace-pre-wrap"
+                    value={ciphertext}
                     onChange={(e) => {
                       setCiphertext(e.target.value);
                       localStorage.setItem("ciphertext", e.target.value);
@@ -209,7 +221,7 @@ export default function Home() {
         >
           <Image
             aria-hidden
-            src="/github-mark.svg"
+            src="/f20cn-cw1/github-mark.svg"
             alt="GitHub Logo"
             className="dark:invert"
             width={32}
@@ -225,7 +237,7 @@ export default function Home() {
         >
           <Image
             aria-hidden
-            src="/github-mark.svg"
+            src="/f20cn-cw1/github-mark.svg"
             alt="GitHub Logo"
             className="dark:invert"
             width={32}
