@@ -221,7 +221,7 @@ export default function Home() {
         >
           <Image
             aria-hidden
-            src="/f20cn-cw1/github-mark.svg"
+            src="/f20cn-cw1-web/github-mark.svg"
             alt="GitHub Logo"
             className="dark:invert"
             width={32}
@@ -237,7 +237,7 @@ export default function Home() {
         >
           <Image
             aria-hidden
-            src="/f20cn-cw1/github-mark.svg"
+            src="/f20cn-cw1-web/github-mark.svg"
             alt="GitHub Logo"
             className="dark:invert"
             width={32}

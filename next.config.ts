@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
    *
    * @see https://nextjs.org/docs/app/api-reference/next-config-js/basePath
    */
-  basePath: "/f20cn-cw1",
+  basePath: "/f20cn-cw1-web",
 
   /**
    * Disable server-based image optimization. Next.js does not support
